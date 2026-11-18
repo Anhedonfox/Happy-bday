@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday! ✨</title>
+  <style>
+    :root {
+      --bg: #0b0914;
+      --card: #151126;
+      --accent: #a855f7;
+      --accent-glow: rgba(168, 85, 247, 0.5);
+      --text: #f3e8ff;
+      --muted: #a195b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at 50% 20%, #241445 0%, var(--bg) 70%);
+    }
+
+    .container {
+      max-width: 680px;
+      width: 100%;
+      text-align: center;
+      z-index: 2;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 20px var(--accent-glow);
+      letter-spacing: 1px;
+    }
+
+    p.subtitle {
+      color: var(--muted);
+      margin-bottom: 30px;
+      font-size: 1.05rem;
+    }
+
+    /* Интерактивный торт со свечой */
+    .cake-box {
+      background: var(--card);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 20px;
+      padding: 30px 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cake-box:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px var(--accent-glow);
+    }
+
+    .flame {
+      font-size: 3rem;
+      display: inline-block;
+      animation: flicker 0.8s infinite alternate;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .flame.blown {
+      opacity: 0;
+      transform: scale(0.2) translateY(-20px);
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-3deg); text-shadow: 0 0 15px #f59e0b; }
+      100% { transform: scale(1.12) rotate(3deg); text-shadow: 0 0 30px #a855f7; }
+    }
+
+    .cake-emoji {
+      font-size: 4.5rem;
+      display: block;
+      margin-top: -10px;
+    }
+
+    .hint {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Кристаллы-пожелания */
+    .crystals {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 25px;
+      display: none;
+    }
+
+    .crystal-card {
+      background: var(--card);
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      border-radius: 16px;
+      padding: 18px 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .crystal-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .crystal-card.opened {
+      background: rgba(168, 85, 247, 0.15);
+      border-color: var(--accent);
+    }
+
+    .crystal-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .crystal-text {
+      font-size: 0.88rem;
+      color: var(--text);
+      display: none;
+      line-height: 1.4;
+    }
+
+    .crystal-card.opened .crystal-text {
+      display: block;
+    }
+
+    .crystal-card.opened .crystal-label {
+      display: none;
+    }
+
+    /* Финальный блок с поздравлением и артами */
+    .gift-reveal {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 0 35px var(--accent-glow);
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      color: var(--text);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .gallery img {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.03);
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @media (max-width: 520px) {
+      .crystals { grid-template-columns: 1fr; }
+      h1 { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti"></canvas>
+
+  <div class="container">
+    <h1>С Днём Рождения! 🦊✨</h1>
+    <p class="subtitle" id="statusText">Загадай желание и нажми на свечу, чтобы задуть её</p>
+
+    <div class="cake-box" id="cakeBox" onclick="blowCandle()">
+      <span class="flame" id="flame">🔥</span>
+      <span class="cake-emoji">🎂</span>
+      <div class="hint" id="cakeHint">[ Нажми, чтобы задуть свечу ]</div>
+    </div>
+
+    <div class="crystals" id="crystalsBox">
+      <div class="crystal-card" onclick="openCrystal(this, 0)">
+        <span class="crystal-icon">🔮</span>
+        <span class="crystal-label">Нажми #1</span>
+        <p class="crystal-text">Пусть в жизни всегда будет свой вайб, спокойствие и ноль токсичных людей вокруг.</p>
+      </div>
+      <div class="crystal-card" onclick="openCrystal(this, 1)">
+        <span class="crystal-icon">💜</span>
+        <span class="crystal-label">Нажми #2</span>
+        <p class="crystal-text">Бесконечного вдохновения, крутых артов и чтобы любые твои идеи легко воплощались!</p>
+      </div>
+      <div class="crystal-card" onclick="openCrystal(this, 2)">
+        <span class="crystal-icon">⚡</span>
+        <span class="crystal-label">Нажми #3</span>
+        <p class="crystal-text">Пусть этот год принесет кучу ярких моментов, свободы и исполнения самых смелых планов.</p>
+      </div>
+    </div>
+
+    <div class="gift-reveal" id="giftReveal">
+      <h2 style="margin-bottom: 12px; color: #d8b4fe;">Твой персональный пак артов 🎁</h2>
+      <p class="message">
+        С 23 ноября! Сделал для тебя небольшую интерактивную открытку и пару праздничных артов с твоей фурсоной. Оставайся такой же яркой и крутой!
+      </p>
+      <div class="gallery">
+        <!-- Замени названия файлов на свои арты, которые положишь рядом с index.html -->
+        <img src="art1.png" alt="Birthday Art 1">
+        <img src="art2.png" alt="Birthday Art 2">
+      </div>
+    </div>
+  </div>
+
+  <!-- По желанию положи рядом файл music.mp3 (например, свой синтвейв из LMMS) -->
+  <audio id="bgMusic" src="music.mp3" loop></audio>
+
+  <script>
+    let candleBlown = false;
+    let openedCount = [false, false, false];
+
+    function blowCandle() {
+      if (candleBlown) return;
+      candleBlown = true;
+      document.getElementById('flame').classList.add('blown');
+      document.getElementById('cakeHint').innerText = '✨ Желание отправлено в космос! Теперь открой 3 кристалла ниже ✨';
+      document.getElementById('statusText').innerText = 'Отлично! Собери все 3 пожелания, чтобы открыть подарок:';
+      document.getElementById('crystalsBox').style.display = 'grid';
+
+      const music = document.getElementById('bgMusic');
+      music.volume = 0.4;
+      music.play().catch(() => {});
+
+      launchConfetti();
+    }
+
+    function openCrystal(el, index) {
+      if (openedCount[index]) return;
+      openedCount[index] = true;
+      el.classList.add('opened');
+
+      if (openedCount.every(Boolean)) {
+        setTimeout(() => {
+          document.getElementById('giftReveal').style.display = 'block';
+          document.getElementById('statusText').innerText = 'Подарок разблокирован! 🎉';
+          launchConfetti();
+        }, 400);
+      }
+    }
+
+    // Простой генератор неонового конфетти
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let particles = [];
+
+    function launchConfetti() {
+      const colors = ['#a855f7', '#d8b4fe', '#ffffff', '#6366f1', '#ec4899'];
+      for (let i = 0; i < 90; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: -10 - Math.random() * 200,
+          r: Math.random() * 5 + 3,
+          d: Math.random() * 4 + 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          tilt: Math.random() * 10 - 5
+        });
+      }
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, idx) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        p.y += p.d;
+        p.x += Math.sin(p.y * 0.03) * 1.5;
+        if (p.y > canvas.height) particles.splice(idx, 1);
+      });
+      requestAnimationFrame(drawConfetti);
+    }
+    drawConfetti();
+  </script>
+</body>
+</html>
