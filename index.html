@@ -1,325 +1,1019 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy Birthday! ✨</title>
-  <style>
-    :root {
-      --bg: #0b0914;
-      --card: #151126;
-      --accent: #a855f7;
-      --accent-glow: rgba(168, 85, 247, 0.5);
-      --text: #f3e8ff;
-      --muted: #a195b8;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090714">
+<meta name="description" content="Особенная интерактивная открытка с Днём Рождения!">
+<title>Happy Birthday! 🦊✨</title>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
+<style>
+:root {
+    --bg: #090714;
+    --card: rgba(25, 19, 48, .78);
+    --accent: #b56aff;
+    --pink: #f08cff;
+    --blue: #7c9cff;
+    --text: #f5eaff;
+    --muted: #a99bbd;
+    --glow: rgba(181, 106, 255, .35);
+}
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100svh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    overflow-x: hidden;
+    padding: 30px 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+        radial-gradient(ellipse at 50% 10%, #38205c 0%, transparent 55%),
+        radial-gradient(ellipse at 10% 80%, #171c49 0%, transparent 45%),
+        radial-gradient(ellipse at 90% 80%, #391844 0%, transparent 45%),
+        var(--bg);
+}
+
+#stars {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.container {
+    width: min(100%, 950px);
+    margin: auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+h1 {
+    font-size: clamp(1.8rem, 5vw, 3.1rem);
+    margin-bottom: 12px;
+    text-shadow: 0 0 25px var(--glow);
+}
+
+h2 {
+    font-size: clamp(1.35rem, 3vw, 2rem);
+    margin-bottom: 15px;
+    color: #e5c7ff;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: clamp(.9rem, 2vw, 1.1rem);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.glass {
+    background: var(--card);
+    border: 1px solid rgba(181, 106, 255, .3);
+    border-radius: 24px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 15px 50px rgba(0,0,0,.3);
+}
+
+.cake-box {
+    padding: 35px 20px;
+    cursor: pointer;
+    transition: .35s;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.cake-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 50px var(--glow);
+    border-color: var(--accent);
+}
+
+.flame {
+    display: block;
+    font-size: 3.5rem;
+    animation: flicker .7s infinite alternate;
+    transition: .7s;
+}
+
+.flame.blown {
+    opacity: 0;
+    transform: translateY(-35px) scale(.1);
+    animation: none;
+}
+
+@keyframes flicker {
+    from { transform: rotate(-5deg) scale(1); }
+    to { transform: rotate(5deg) scale(1.15); }
+}
+
+.cake-emoji {
+    display: block;
+    font-size: clamp(4rem, 10vw, 6rem);
+    margin-top: -5px;
+}
+
+.hint {
+    margin-top: 15px;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: .95rem;
+}
+
+.crystals {
+    display: none;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.crystal-card {
+    padding: 25px 15px;
+    cursor: pointer;
+    transition: .3s;
+    min-width: 0;
+}
+
+.crystal-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 0 25px var(--glow);
+}
+
+.crystal-card.opened {
+    background: rgba(181,106,255,.16);
+    border-color: var(--accent);
+}
+
+.crystal-icon {
+    font-size: 2.8rem;
+    display: block;
+    margin-bottom: 12px;
+    transition: .5s;
+}
+
+.crystal-card.opened .crystal-icon {
+    transform: scale(1.3) rotate(15deg);
+}
+
+.crystal-label {
+    color: var(--pink);
+    font-weight: 600;
+}
+
+.crystal-text {
+    display: none;
+    font-size: .95rem;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.crystal-card.opened .crystal-label {
+    display: none;
+}
+
+.crystal-card.opened .crystal-text {
+    display: block;
+    animation: appear .5s ease;
+}
+
+.secret {
+    display: none;
+    grid-column: 1 / -1;
+    padding: 25px;
+    border-color: #ffd36b;
+    cursor: pointer;
+    animation: appear .8s ease;
+}
+
+.secret.opened {
+    background: rgba(255,211,107,.1);
+}
+
+.secret .crystal-text {
+    color: #ffe5a3;
+}
+
+.progress-container {
+    display: none;
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: .85rem;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    height: 9px;
+    background: rgba(255,255,255,.08);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--pink));
+    border-radius: 20px;
+    transition: width .5s ease;
+    box-shadow: 0 0 15px var(--accent);
+}
+
+.gift-reveal {
+    display: none;
+    padding: clamp(20px, 4vw, 40px);
+    border-color: var(--accent);
+    box-shadow: 0 0 45px var(--glow);
+    animation: giftAppear 1s ease forwards;
+}
+
+@keyframes giftAppear {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message {
+    color: var(--text);
+    line-height: 1.8;
+    font-size: clamp(.95rem, 2vw, 1.1rem);
+    margin-bottom: 25px;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.gallery img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid rgba(181,106,255,.4);
+    cursor: pointer;
+    transition: .35s;
+    background: rgba(255,255,255,.04);
+}
+
+.gallery img:hover {
+    transform: scale(1.025);
+    box-shadow: 0 0 25px var(--glow);
+}
+
+.music-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    background: rgba(35,25,60,.9);
+    border: 1px solid var(--accent);
+    border-radius: 50px;
+    padding: 12px 18px;
+    color: white;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: .3s;
+}
+
+.music-button:hover {
+    background: var(--accent);
+}
+
+.lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.92);
+    z-index: 20;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.lightbox img {
+    max-width: 95%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 15px;
+    box-shadow: 0 0 40px var(--glow);
+}
+
+#confetti {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 15;
+}
+
+footer {
+    margin-top: 35px;
+    color: #786a8e;
+    font-size: .8rem;
+}
+
+button:focus-visible,
+.crystal-card:focus-visible,
+.cake-box:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 5px;
+}
+
+@media(max-width: 600px) {
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      overflow-x: hidden;
-      background-image: radial-gradient(circle at 50% 20%, #241445 0%, var(--bg) 70%);
+        padding: 25px 14px 85px;
+        align-items: flex-start;
     }
 
     .container {
-      max-width: 680px;
-      width: 100%;
-      text-align: center;
-      z-index: 2;
+        margin-top: 25px;
     }
 
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 10px;
-      text-shadow: 0 0 20px var(--accent-glow);
-      letter-spacing: 1px;
-    }
-
-    p.subtitle {
-      color: var(--muted);
-      margin-bottom: 30px;
-      font-size: 1.05rem;
-    }
-
-    /* Интерактивный торт со свечой */
-    .cake-box {
-      background: var(--card);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      border-radius: 20px;
-      padding: 30px 20px;
-      margin-bottom: 25px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .cake-box:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px var(--accent-glow);
-    }
-
-    .flame {
-      font-size: 3rem;
-      display: inline-block;
-      animation: flicker 0.8s infinite alternate;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    .flame.blown {
-      opacity: 0;
-      transform: scale(0.2) translateY(-20px);
-    }
-
-    @keyframes flicker {
-      0% { transform: scale(1) rotate(-3deg); text-shadow: 0 0 15px #f59e0b; }
-      100% { transform: scale(1.12) rotate(3deg); text-shadow: 0 0 30px #a855f7; }
-    }
-
-    .cake-emoji {
-      font-size: 4.5rem;
-      display: block;
-      margin-top: -10px;
-    }
-
-    .hint {
-      margin-top: 12px;
-      font-size: 0.9rem;
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    /* Кристаллы-пожелания */
     .crystals {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 25px;
-      display: none;
+        grid-template-columns: 1fr;
     }
 
-    .crystal-card {
-      background: var(--card);
-      border: 1px solid rgba(168, 85, 247, 0.25);
-      border-radius: 16px;
-      padding: 18px 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .crystal-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 0 15px var(--accent-glow);
-    }
-
-    .crystal-card.opened {
-      background: rgba(168, 85, 247, 0.15);
-      border-color: var(--accent);
-    }
-
-    .crystal-icon {
-      font-size: 2rem;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .crystal-text {
-      font-size: 0.88rem;
-      color: var(--text);
-      display: none;
-      line-height: 1.4;
-    }
-
-    .crystal-card.opened .crystal-text {
-      display: block;
-    }
-
-    .crystal-card.opened .crystal-label {
-      display: none;
-    }
-
-    /* Финальный блок с поздравлением и артами */
-    .gift-reveal {
-      display: none;
-      background: var(--card);
-      border: 1px solid var(--accent);
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 0 35px var(--accent-glow);
-      animation: fadeIn 0.8s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .message {
-      font-size: 1.05rem;
-      line-height: 1.6;
-      margin-bottom: 25px;
-      color: var(--text);
+    .secret {
+        grid-column: auto;
     }
 
     .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
+        grid-template-columns: 1fr;
     }
 
-    .gallery img {
-      width: 100%;
-      border-radius: 14px;
-      border: 1px solid rgba(168, 85, 247, 0.4);
-      transition: transform 0.3s ease;
+    .cake-box {
+        padding: 25px 15px;
     }
 
-    .gallery img:hover {
-      transform: scale(1.03);
+    .music-button {
+        bottom: 12px;
+        right: 12px;
     }
+}
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 1;
+@media(prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
     }
-
-    @media (max-width: 520px) {
-      .crystals { grid-template-columns: 1fr; }
-      h1 { font-size: 1.7rem; }
-    }
-  </style>
+}
+</style>
 </head>
+
 <body>
 
-  <canvas id="confetti"></canvas>
+<canvas id="stars"></canvas>
+<canvas id="confetti"></canvas>
 
-  <div class="container">
+<audio id="bgMusic" src="music.mp3" loop preload="none"></audio>
+
+<button class="music-button" id="musicButton" onclick="toggleMusic()">
+    🎵 Музыка: выкл.
+</button>
+
+<div class="container">
+
     <h1>С Днём Рождения! 🦊✨</h1>
-    <p class="subtitle" id="statusText">Загадай желание и нажми на свечу, чтобы задуть её</p>
 
-    <div class="cake-box" id="cakeBox" onclick="blowCandle()">
-      <span class="flame" id="flame">🔥</span>
-      <span class="cake-emoji">🎂</span>
-      <div class="hint" id="cakeHint">[ Нажми, чтобы задуть свечу ]</div>
+    <p class="subtitle" id="statusText">
+        Загадай желание и нажми на свечу, чтобы задуть её.
+    </p>
+
+    <!-- ТОРТ -->
+
+    <div class="cake-box glass" id="cakeBox" role="button"
+         tabindex="0" aria-label="Задуть свечу">
+
+        <span class="flame" id="flame">🔥</span>
+
+        <span class="cake-emoji">🎂</span>
+
+        <div class="hint" id="cakeHint">
+            ✨ Нажми, чтобы задуть свечу ✨
+        </div>
+
     </div>
+
+    <!-- ПРОГРЕСС -->
+
+    <div class="progress-container" id="progressContainer">
+
+        <div class="progress-label">
+            <span>Путь к подарку</span>
+            <span id="progressText">0 / 3</span>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+    </div>
+
+    <!-- КРИСТАЛЛЫ -->
 
     <div class="crystals" id="crystalsBox">
-      <div class="crystal-card" onclick="openCrystal(this, 0)">
-        <span class="crystal-icon">🔮</span>
-        <span class="crystal-label">Нажми #1</span>
-        <p class="crystal-text">Пусть в жизни всегда будет свой вайб, спокойствие и ноль токсичных людей вокруг.</p>
-      </div>
-      <div class="crystal-card" onclick="openCrystal(this, 1)">
-        <span class="crystal-icon">💜</span>
-        <span class="crystal-label">Нажми #2</span>
-        <p class="crystal-text">Бесконечного вдохновения, крутых артов и чтобы любые твои идеи легко воплощались!</p>
-      </div>
-      <div class="crystal-card" onclick="openCrystal(this, 2)">
-        <span class="crystal-icon">⚡</span>
-        <span class="crystal-label">Нажми #3</span>
-        <p class="crystal-text">Пусть этот год принесет кучу ярких моментов, свободы и исполнения самых смелых планов.</p>
-      </div>
+
+        <div class="crystal-card glass" role="button" tabindex="0">
+            <span class="crystal-icon">🔮</span>
+            <span class="crystal-label">Первое пожелание</span>
+            <p class="crystal-text">
+                Пусть в жизни всегда будет свой вайб,
+                спокойствие и ноль токсичных людей вокруг.
+            </p>
+        </div>
+
+        <div class="crystal-card glass" role="button" tabindex="0">
+            <span class="crystal-icon">💜</span>
+            <span class="crystal-label">Второе пожелание</span>
+            <p class="crystal-text">
+                Бесконечного вдохновения, крутых артов
+                и чтобы любые твои идеи легко воплощались!
+            </p>
+        </div>
+
+        <div class="crystal-card glass" role="button" tabindex="0">
+            <span class="crystal-icon">⚡</span>
+            <span class="crystal-label">Третье пожелание</span>
+            <p class="crystal-text">
+                Пусть этот год принесёт кучу ярких моментов,
+                свободы и исполнения самых смелых планов.
+            </p>
+        </div>
+
+        <!-- СЕКРЕТНЫЙ КРИСТАЛЛ -->
+
+        <div class="crystal-card glass secret" id="secretCrystal"
+             role="button" tabindex="0">
+
+            <span class="crystal-icon">🌟</span>
+
+            <span class="crystal-label">Секретное пожелание</span>
+
+            <p class="crystal-text">
+                А вот и маленький секрет!
+                Пусть рядом всегда будут те, с кем можно
+                оставаться собой. 💜
+            </p>
+
+        </div>
+
     </div>
 
-    <div class="gift-reveal" id="giftReveal">
-      <h2 style="margin-bottom: 12px; color: #d8b4fe;">Твой персональный пак артов 🎁</h2>
-      <p class="message">
-        С 23 ноября! Сделал для тебя небольшую интерактивную открытку и пару праздничных артов с твоей фурсоной. Оставайся такой же яркой и крутой!
-      </p>
-      <div class="gallery">
-        <!-- Замени названия файлов на свои арты, которые положишь рядом с index.html -->
-        <img src="art1.png" alt="Birthday Art 1">
-        <img src="art2.png" alt="Birthday Art 2">
-      </div>
+    <!-- ПОДАРОК -->
+
+    <div class="gift-reveal glass" id="giftReveal">
+
+        <h2>Твой персональный пак артов 🎁</h2>
+
+        <p class="message">
+            С 23 ноября! 💜<br><br>
+
+            Сделал для тебя небольшую интерактивную открытку
+            и праздничные арты с твоей фурсоной.
+
+            Пусть впереди будет много интересных событий,
+            вдохновения и счастливых моментов!
+
+            Оставайся такой же яркой и крутой! 🦊✨
+        </p>
+
+        <div class="gallery">
+
+            <img src="art1.png"
+                 alt="Праздничный арт 1"
+                 loading="lazy">
+
+            <img src="art2.png"
+                 alt="Праздничный арт 2"
+                 loading="lazy">
+
+        </div>
+
+        <p class="message" style="margin-top:25px;margin-bottom:0">
+            ✨ С праздником! ✨
+        </p>
+
     </div>
-  </div>
 
-  <!-- По желанию положи рядом файл music.mp3 (например, свой синтвейв из LMMS) -->
-  <audio id="bgMusic" src="music.mp3" loop></audio>
+    <footer>
+        Made with 💜 and a little bit of magic.
+    </footer>
 
-  <script>
-    let candleBlown = false;
-    let openedCount = [false, false, false];
+</div>
 
-    function blowCandle() {
-      if (candleBlown) return;
-      candleBlown = true;
-      document.getElementById('flame').classList.add('blown');
-      document.getElementById('cakeHint').innerText = '✨ Желание отправлено в космос! Теперь открой 3 кристалла ниже ✨';
-      document.getElementById('statusText').innerText = 'Отлично! Собери все 3 пожелания, чтобы открыть подарок:';
-      document.getElementById('crystalsBox').style.display = 'grid';
+<!-- ПОЛНОЭКРАННЫЙ ПРОСМОТР -->
 
-      const music = document.getElementById('bgMusic');
-      music.volume = 0.4;
-      music.play().catch(() => {});
+<div class="lightbox" id="lightbox" role="button"
+     aria-label="Закрыть изображение">
 
-      launchConfetti();
+    <img src="" alt="Увеличенный арт" id="lightboxImage">
+
+</div>
+
+<script>
+
+// =====================================
+// ОСНОВНЫЕ ЭЛЕМЕНТЫ
+// =====================================
+
+const $ = id => document.getElementById(id);
+
+let candleBlown = false;
+let openedCount = 0;
+let opened = [false, false, false, false];
+
+const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+).matches;
+
+
+// =====================================
+// ЗАДУВАНИЕ СВЕЧИ
+// =====================================
+
+function blowCandle() {
+
+    if (candleBlown) return;
+
+    candleBlown = true;
+
+    $('flame').classList.add('blown');
+
+    $('cakeHint').textContent =
+        '✨ Желание отправлено в космос! ✨';
+
+    $('statusText').textContent =
+        'Отлично! Теперь открой три кристалла с пожеланиями.';
+
+    $('crystalsBox').style.display = 'grid';
+
+    $('progressContainer').style.display = 'block';
+
+    playMusic();
+
+    launchConfetti(100);
+
+    $('crystalsBox').scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: 'center'
+    });
+
+}
+
+$('cakeBox').addEventListener('click', blowCandle);
+
+$('cakeBox').addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        blowCandle();
     }
+});
 
-    function openCrystal(el, index) {
-      if (openedCount[index]) return;
-      openedCount[index] = true;
-      el.classList.add('opened');
 
-      if (openedCount.every(Boolean)) {
+// =====================================
+// КРИСТАЛЛЫ
+// =====================================
+
+const crystalCards = document.querySelectorAll(
+    '.crystal-card:not(.secret)'
+);
+
+crystalCards.forEach((card, index) => {
+
+    card.addEventListener('click', () => openCrystal(card, index));
+
+    card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openCrystal(card, index);
+        }
+    });
+
+});
+
+function openCrystal(card, index) {
+
+    if (!candleBlown || opened[index]) return;
+
+    opened[index] = true;
+    openedCount++;
+
+    card.classList.add('opened');
+
+    $('progressText').textContent =
+        `${openedCount} / 3`;
+
+    $('progressFill').style.width =
+        `${openedCount / 3 * 100}%`;
+
+    launchConfetti(20);
+
+    if (openedCount === 3) {
+
+        $('statusText').textContent =
+            'Все пожелания собраны! Но погоди... 🌟';
+
         setTimeout(() => {
-          document.getElementById('giftReveal').style.display = 'block';
-          document.getElementById('statusText').innerText = 'Подарок разблокирован! 🎉';
-          launchConfetti();
-        }, 400);
-      }
+
+            $('secretCrystal').style.display = 'block';
+
+            $('secretCrystal').scrollIntoView({
+                behavior: reducedMotion ? 'auto' : 'smooth',
+                block: 'center'
+            });
+
+        }, 600);
+
     }
 
-    // Простой генератор неонового конфетти
-    const canvas = document.getElementById('confetti');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    let particles = [];
+}
 
-    function launchConfetti() {
-      const colors = ['#a855f7', '#d8b4fe', '#ffffff', '#6366f1', '#ec4899'];
-      for (let i = 0; i < 90; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: -10 - Math.random() * 200,
-          r: Math.random() * 5 + 3,
-          d: Math.random() * 4 + 2,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          tilt: Math.random() * 10 - 5
+
+// =====================================
+// СЕКРЕТНЫЙ КРИСТАЛЛ
+// =====================================
+
+$('secretCrystal').addEventListener('click', openSecret);
+
+$('secretCrystal').addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openSecret();
+    }
+});
+
+function openSecret() {
+
+    if (opened[3]) return;
+
+    opened[3] = true;
+
+    $('secretCrystal').classList.add('opened');
+
+    $('progressText').textContent = '3 / 3 + секрет!';
+
+    $('progressFill').style.width = '100%';
+
+    launchConfetti(60);
+
+    setTimeout(() => {
+
+        $('giftReveal').style.display = 'block';
+
+        $('statusText').textContent =
+            '🎉 Подарок разблокирован! 🎉';
+
+        $('giftReveal').scrollIntoView({
+            behavior: reducedMotion ? 'auto' : 'smooth',
+            block: 'center'
         });
-      }
+
+        launchConfetti(150);
+
+    }, 1200);
+
+}
+
+
+// =====================================
+// МУЗЫКА
+// =====================================
+
+const music = $('bgMusic');
+
+music.volume = 0.4;
+
+function playMusic() {
+
+    music.play().then(() => {
+
+        $('musicButton').textContent =
+            '🎵 Музыка: вкл.';
+
+    }).catch(() => {
+
+        $('musicButton').textContent =
+            '🎵 Включить музыку';
+
+    });
+
+}
+
+function toggleMusic() {
+
+    if (music.paused) {
+
+        playMusic();
+
+    } else {
+
+        music.pause();
+
+        $('musicButton').textContent =
+            '🎵 Музыка: выкл.';
+
     }
 
-    function drawConfetti() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p, idx) => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-        p.y += p.d;
-        p.x += Math.sin(p.y * 0.03) * 1.5;
-        if (p.y > canvas.height) particles.splice(idx, 1);
-      });
-      requestAnimationFrame(drawConfetti);
+}
+
+
+// =====================================
+// ГАЛЕРЕЯ
+// =====================================
+
+document.querySelectorAll('.gallery img').forEach(img => {
+
+    img.addEventListener('click', () => {
+
+        $('lightboxImage').src = img.src;
+
+        $('lightbox').style.display = 'flex';
+
+    });
+
+    img.addEventListener('error', () => {
+
+        img.alt = 'Изображение не найдено: ' + img.src.split('/').pop();
+
+    });
+
+});
+
+$('lightbox').addEventListener('click', () => {
+
+    $('lightbox').style.display = 'none';
+
+});
+
+document.addEventListener('keydown', e => {
+
+    if (e.key === 'Escape') {
+        $('lightbox').style.display = 'none';
     }
-    drawConfetti();
-  </script>
+
+});
+
+
+// =====================================
+// КОНФЕТТИ
+// =====================================
+
+const confettiCanvas = $('confetti');
+const cctx = confettiCanvas.getContext('2d');
+
+let particles = [];
+let confettiRunning = false;
+
+function resizeConfetti() {
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    confettiCanvas.width = innerWidth * dpr;
+    confettiCanvas.height = innerHeight * dpr;
+
+    confettiCanvas.style.width = innerWidth + 'px';
+    confettiCanvas.style.height = innerHeight + 'px';
+
+    cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+}
+
+window.addEventListener('resize', resizeConfetti);
+
+resizeConfetti();
+
+function launchConfetti(amount = 60) {
+
+    const colors = [
+        '#b56aff',
+        '#f08cff',
+        '#ffffff',
+        '#7c9cff',
+        '#ffd36b'
+    ];
+
+    for (let i = 0; i < amount; i++) {
+
+        particles.push({
+
+            x: Math.random() * innerWidth,
+
+            y: -20 - Math.random() * 200,
+
+            size: Math.random() * 7 + 3,
+
+            speed: Math.random() * 3 + 2,
+
+            color: colors[
+                Math.floor(Math.random() * colors.length)
+            ],
+
+            rotation: Math.random() * 360,
+
+            rotationSpeed: Math.random() * 8 - 4,
+
+            drift: Math.random() * 2 - 1
+
+        });
+
+    }
+
+    if (!confettiRunning && !reducedMotion) {
+
+        confettiRunning = true;
+
+        requestAnimationFrame(drawConfetti);
+
+    }
+
+}
+
+function drawConfetti() {
+
+    cctx.clearRect(0, 0, innerWidth, innerHeight);
+
+    particles.forEach(p => {
+
+        p.y += p.speed;
+
+        p.x += p.drift;
+
+        p.rotation += p.rotationSpeed;
+
+        cctx.save();
+
+        cctx.translate(p.x, p.y);
+
+        cctx.rotate(p.rotation * Math.PI / 180);
+
+        cctx.fillStyle = p.color;
+
+        cctx.fillRect(
+            -p.size / 2,
+            -p.size / 2,
+            p.size,
+            p.size * .65
+        );
+
+        cctx.restore();
+
+    });
+
+    particles = particles.filter(p => p.y < innerHeight + 30);
+
+    if (particles.length > 0) {
+
+        requestAnimationFrame(drawConfetti);
+
+    } else {
+
+        confettiRunning = false;
+
+        cctx.clearRect(0, 0, innerWidth, innerHeight);
+
+    }
+
+}
+
+
+// =====================================
+// ЗВЁЗДНЫЙ ФОН
+// =====================================
+
+const starsCanvas = $('stars');
+const sctx = starsCanvas.getContext('2d');
+
+let stars = [];
+
+function resizeStars() {
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    starsCanvas.width = innerWidth * dpr;
+    starsCanvas.height = innerHeight * dpr;
+
+    starsCanvas.style.width = innerWidth + 'px';
+    starsCanvas.style.height = innerHeight + 'px';
+
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    stars = Array.from(
+        { length: Math.min(130, Math.floor(innerWidth / 7)) },
+        () => ({
+            x: Math.random() * innerWidth,
+            y: Math.random() * innerHeight,
+            radius: Math.random() * 1.5 + .3,
+            alpha: Math.random(),
+            speed: Math.random() * .01 + .002
+        })
+    );
+
+}
+
+window.addEventListener('resize', resizeStars);
+
+resizeStars();
+
+function drawStars() {
+
+    sctx.clearRect(0, 0, innerWidth, innerHeight);
+
+    stars.forEach(star => {
+
+        if (!reducedMotion) {
+
+            star.alpha += star.speed;
+
+            if (star.alpha > 1 || star.alpha < .2) {
+                star.speed *= -1;
+            }
+
+        }
+
+        sctx.beginPath();
+
+        sctx.arc(
+            star.x,
+            star.y,
+            star.radius,
+            0,
+            Math.PI * 2
+        );
+
+        sctx.fillStyle =
+            `rgba(225,205,255,${star.alpha})`;
+
+        sctx.fill();
+
+    });
+
+    if (!document.hidden && !reducedMotion) {
+        requestAnimationFrame(drawStars);
+    }
+
+}
+
+document.addEventListener('visibilitychange', () => {
+
+    if (!document.hidden && !reducedMotion) {
+        drawStars();
+    }
+
+});
+
+if (!reducedMotion) {
+    drawStars();
+} else {
+    drawStars();
+}
+
+</script>
+
 </body>
 </html>
